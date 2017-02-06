@@ -4,10 +4,16 @@ try:
 except ImportError:
     pass
 
+try:
+    import pypandoc
+    long_description = pypandoc.convert('README.md', 'rst')
+except ImportError:
+    long_description = open('README.md').read()
+
 setup(
     name='httpie-aws-authv4',
     description='AWS auth v4 plugin for HTTPie.',
-    version='0.0.1',
+    version='0.1.0',
     author='Aidan Rowe',
     author_email='aidanrowe@gmail.com',
     license='BSD',
@@ -15,6 +21,7 @@ setup(
     download_url='https://github.com/aidan-/httpie-aws-authv4',
     py_modules=['httpie_aws_authv4'],
     zip_safe=False,
+    long_description=long_description,
     entry_points={
         'httpie.plugins.auth.v1': [
             'httpie_aws_authv4 = httpie_aws_authv4:AWSv4AuthPlugin'
