@@ -1,0 +1,6 @@
+# See: https://docs.python.org/3/distutils/commandref.html
+
+include README.md
+include LICENSE.md
+
+global-exclude *.py[cod] __pycache__ .DS_Store
