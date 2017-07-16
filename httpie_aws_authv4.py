@@ -40,10 +40,10 @@ class AWSAuth(object):
                 _, _, host, _, _, _, _ = parse_url(r.url)
                 aws_params = self._parse_url(host)
         except ValueError:
-            print "ERROR: Could not parse neccessary information from URL."
+            print("ERROR: Could not parse neccessary information from URL.")
             raise
         except Exception as error:
-            print "Error parsing URL: %s" % error
+            print("Error parsing URL: %s" % error)
             raise
 
         aws_request = AWSRequestsAuth(aws_access_key=self.aws_access_key,
