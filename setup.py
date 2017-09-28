@@ -13,7 +13,7 @@ except ImportError:
 setup(
     name='httpie-aws-authv4',
     description='AWS auth v4 plugin for HTTPie.',
-    version='0.1.1',
+    version='0.1.2',
     author='Aidan Rowe',
     author_email='aidanrowe@gmail.com',
     license='BSD',
