@@ -34,10 +34,14 @@ class AWSAuth(object):
 
     def __call__(self, r):
         try:
+            # Host used in signature *MUST* always match with Host HTTP header.
+            host = r.headers.get('Host')
+            if not host:
+                _, _, host, _, _, _, _ = parse_url(r.url)
+                r.headers['Host'] = host
             if self.domain != None:
                 aws_params = self._parse_url(self.domain)
             else:
-                _, _, host, _, _, _, _ = parse_url(r.url)
                 aws_params = self._parse_url(host)
         except ValueError:
             print("ERROR: Could not parse neccessary information from URL.")
@@ -48,7 +52,7 @@ class AWSAuth(object):
 
         aws_request = AWSRequestsAuth(aws_access_key=self.aws_access_key,
                                       aws_secret_access_key=self.aws_secret_access_key,
-                                      aws_host=aws_params['host'],
+                                      aws_host=host,
                                       aws_region=aws_params['region'],
                                       aws_service=aws_params['service'],
                                       aws_token=self.aws_token)
@@ -60,16 +64,14 @@ class AWSAuth(object):
         m = p.search(domain)
 
         if m:
-            return {"host": domain,
-                    "region": m.group(1),
+            return {"region": m.group(1),
                     "service": "es"}
 
         p = re.compile("([^\.]+)\.([^\.]+)\.amazonaws.com$")
         m = p.search(domain)
 
         if m:
-            return {"host": domain,
-                    "region": m.group(2),
+            return {"region": m.group(2),
                     "service": m.group(1)}
 
         raise ValueError("Could not determine AWS region or service from domain name.")
