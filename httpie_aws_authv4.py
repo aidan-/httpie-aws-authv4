@@ -17,7 +17,7 @@ __author__ = 'Aidan Rowe'
 __licence__ = 'BSD'
 
 class AWSAuth(object):
-    def __init__(self, access_key=None, secret_key=None, domain=None):
+    def __init__(self, access_key=None, secret_key=None, domain=None, profile=None):
         self.domain = domain
 
         if access_key and secret_key:
@@ -25,7 +25,7 @@ class AWSAuth(object):
             self.aws_secret_access_key = secret_key
             self.aws_token = None
         else:
-            sess = session.Session()
+            sess = session.Session(profile_name=profile)
             creds = sess.get_credentials()
 
             self.aws_access_key = creds.access_key
@@ -101,15 +101,19 @@ class AWSv4AuthPlugin(AuthPlugin):
         access_key = None
         secret_key = None
         domain = None
+        profile = None
 
         if self.raw_auth != None:
             parts = self.raw_auth.split(':')
             if len(parts) >= 2:
-                access_key = parts[0]
-                secret_key = parts[1]
+                if parts[0] == 'profile':
+                    profile = parts[1]
+                else:
+                    access_key = parts[0]
+                    secret_key = parts[1]
                 if len(parts) == 3:
                     domain = parts[2]
             elif len(parts) == 1:
                 domain = parts[0]
 
-        return AWSAuth(access_key=access_key, secret_key=secret_key, domain=domain)
+        return AWSAuth(access_key=access_key, secret_key=secret_key, domain=domain, profile=profile)

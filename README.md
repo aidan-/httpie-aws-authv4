@@ -12,7 +12,7 @@ You should now see `aws4` under `--auth-type / -A` in `$ http --help` output.
 ## Usage
 
 ### Credentials in default profile/environment variables/instance profile
-This authentication plugin looks for credentials in the same [precedence that the AWS CLI tool](http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html#config-settings-and-precedence) does.  At the moment, the plugin only looks at the default profile for credentials stored in credentials file.
+This authentication plugin looks for credentials in the same [precedence that the AWS CLI tool](http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html#config-settings-and-precedence) does.
 
 ```
 $ http --auth-type aws4 https://asdf123a9sas.execute-api.ap-southeast-2.amazonaws.com/dev/test 
@@ -22,6 +22,13 @@ $ http --auth-type aws4 https://asdf123a9sas.execute-api.ap-southeast-2.amazonaw
 
 ```
 $ http --auth-type aws4 --auth ACCESSKEYXXX:AWSSECRETKEYXXX https://asdf123a9sas.execute-api.ap-southeast-2.amazonaws.com/dev/test 
+```
+
+### Specify credentials profile on the CLI
+You can specify an another profile than the default profile by providing the keyword `profile` instead of the access key.
+
+```
+$ http --auth-type aws4 --auth profile:XXX https://asdf123a9sas.execute-api.ap-southeast-2.amazonaws.com/dev/test 
 ```
 
 ### Specify the endpoint
@@ -35,6 +42,12 @@ $ http --auth-type aws4 --auth asdf123a9sas.execute-api.ap-southeast-2.amazonaws
 
 ```
 $ http --auth-type aws4 --auth ACCESSKEYXXX:AWSSECRETKEYXXX:asdf123a9sas.execute-api.ap-southeast-2.amazonaws.com https://api.awesomeservice.net/dev/test 
+```
+
+### Specify credentials profile and endpoint
+
+```
+$ http --auth-type aws4 --auth profile:XXX:asdf123a9sas.execute-api.ap-southeast-2.amazonaws.com https://api.awesomeservice.net/dev/test 
 ```
 
 ## Credits
