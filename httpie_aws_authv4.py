@@ -1,20 +1,20 @@
+# -*- coding: utf-8 -*-
 """
 AWS-v4 auth plugin for HTTPie.
 
 """
 import re
 
-from httpie import ExitStatus
 from httpie.plugins import AuthPlugin
-from httpie.compat import bytes
 
 from aws_requests_auth.aws_auth import AWSRequestsAuth
 from boto3 import session
 from urllib3.util import parse_url
 
-__version__ = '0.1.2'
+__version__ = '0.1.3'
 __author__ = 'Aidan Rowe'
 __licence__ = 'BSD'
+
 
 class AWSAuth(object):
     def __init__(self, access_key=None, secret_key=None, domain=None, profile=None):
@@ -39,7 +39,7 @@ class AWSAuth(object):
             if not host:
                 _, _, host, _, _, _, _ = parse_url(r.url)
                 r.headers['Host'] = host
-            if self.domain != None:
+            if self.domain is not None:
                 aws_params = self._parse_url(self.domain)
             else:
                 aws_params = self._parse_url(host)
@@ -59,7 +59,8 @@ class AWSAuth(object):
 
         return aws_request.__call__(r)
 
-    def _parse_url(self, domain):
+    @staticmethod
+    def _parse_url(domain):
         p = re.compile("([^\.]+)\.es\.amazonaws.com$")
         m = p.search(domain)
 
@@ -105,7 +106,7 @@ class AWSv4AuthPlugin(AuthPlugin):
         domain = None
         profile = None
 
-        if self.raw_auth != None:
+        if self.raw_auth is not None:
             parts = self.raw_auth.split(':')
             if len(parts) >= 2:
                 if parts[0] == 'profile':
