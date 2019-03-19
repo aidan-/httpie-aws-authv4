@@ -1,7 +1,16 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+import re
 from setuptools import setup
 from httpie_aws_authv4 import __version__
 
 long_description = open('README.md').read()
+
+with open('README.md', 'rt', encoding='utf8') as f:
+    readme = f.read()
+
+with open('httpie_aws_authv4.py', 'rt', encoding='utf8') as f:
+    version = re.search(r'__version__ = \'(.*?)\'', f.read()).group(1)
 
 setup(
     name='httpie-aws-authv4',
@@ -14,7 +23,7 @@ setup(
     download_url='https://github.com/aidan-/httpie-aws-authv4',
     py_modules=['httpie_aws_authv4'],
     zip_safe=False,
-    long_description=long_description,
+    long_description=readme,
     long_description_content_type='text/markdown',
     entry_points={
         'httpie.plugins.auth.v1': [

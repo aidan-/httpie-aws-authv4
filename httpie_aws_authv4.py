@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 AWS-v4 auth plugin for HTTPie.
 
