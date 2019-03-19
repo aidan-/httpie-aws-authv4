@@ -2,9 +2,6 @@
 # -*- coding: utf-8 -*-
 import re
 from setuptools import setup
-from httpie_aws_authv4 import __version__
-
-long_description = open('README.md').read()
 
 with open('README.md', 'rt', encoding='utf8') as f:
     readme = f.read()
@@ -15,7 +12,7 @@ with open('httpie_aws_authv4.py', 'rt', encoding='utf8') as f:
 setup(
     name='httpie-aws-authv4',
     description='AWS auth v4 plugin for HTTPie.',
-    version=__version__,
+    version=version,
     author='Aidan Rowe',
     author_email='aidanrowe@gmail.com',
     license='BSD',
