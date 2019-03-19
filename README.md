@@ -50,6 +50,30 @@ $ http --auth-type aws4 --auth ACCESSKEYXXX:AWSSECRETKEYXXX:asdf123a9sas.execute
 $ http --auth-type aws4 --auth profile:XXX:asdf123a9sas.execute-api.ap-southeast-2.amazonaws.com https://api.awesomeservice.net/dev/test 
 ```
 
+### Calling AWS services that require extra information
+
+Many AWS services do not require any extra information to be passed other than the URL, such as the following call to the
+S3 service which will list all S3 Buckets in the given AWS account:
+
+```
+http -A aws4 s3.us-east-1.amazonaws.com
+```
+
+However, some AWS services will require extra information to be passed using query string parameters.  By default, ``httpie`` passes
+extra parameters as a JSON body. ``httpie`` can be told to pass extra parameters as form fields using the ``-f`` flag like so:
+
+```
+$ http -f -A aws4 ec2.us-east-1.amazonaws.com Action=DescribeVpcs Version=2015-10-01
+```
+
+where the *Action* and *Version* parameters were passed to the EC2 service to call the **DescribeVpcs** API.
+
+Alternatively instead of using the ``-f`` flag, ``==`` can be usef for each parameter like so:
+
+```
+$ http -A aws4 ec2.us-east-1.amazonaws.com Action==DescribeVpcs Version==2015-10-01
+```
+
 ## Credits
 
 All of the heavy lifting (the signing process) is handled by [aws-requests-auth](https://github.com/DavidMuller/aws-requests-auth)
