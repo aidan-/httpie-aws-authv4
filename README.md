@@ -68,7 +68,7 @@ $ http -f -A aws4 ec2.us-east-1.amazonaws.com Action=DescribeVpcs Version=2015-1
 
 where the *Action* and *Version* parameters were passed to the EC2 service to call the **DescribeVpcs** API.
 
-Alternatively instead of using the ``-f`` flag, ``==`` can be usef for each parameter like so:
+Alternatively instead of using the ``-f`` flag, ``==`` can be used for each parameter like so:
 
 ```
 $ http -A aws4 ec2.us-east-1.amazonaws.com Action==DescribeVpcs Version==2015-10-01
