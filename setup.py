@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import re
+import io
 from setuptools import setup
 
-with open('README.md', 'rt', encoding='utf8') as f:
+with io.open('README.md', 'rt', encoding='utf8') as f:
     readme = f.read()
 
-with open('httpie_aws_authv4.py', 'rt', encoding='utf8') as f:
+with io.open('httpie_aws_authv4.py', 'rt', encoding='utf8') as f:
     version = re.search(r'__version__ = \'(.*?)\'', f.read()).group(1)
 
 setup(
