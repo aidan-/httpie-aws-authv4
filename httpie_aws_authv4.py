@@ -17,8 +17,18 @@ __licence__ = "MIT"
 
 
 class AWSAuth(object):
-    def __init__(self, access_key=None, secret_key=None, domain=None, profile=None):
+    def __init__(
+        self,
+        access_key=None,
+        secret_key=None,
+        domain=None,
+        profile=None,
+        region=None,
+        service=None,
+    ):
         self.domain = domain
+        self.aws_region: str = region
+        self.aws_service: str = service
 
         if access_key and secret_key:
             self.aws_access_key = access_key
@@ -42,6 +52,8 @@ class AWSAuth(object):
                 self.aws_secret_access_key == other.aws_secret_access_key,
                 self.aws_token == other.aws_token,
                 self.domain == other.domain,
+                self.aws_region == other.aws_region,
+                self.aws_service == other.aws_service,
             ]
         )
 
@@ -52,7 +64,10 @@ class AWSAuth(object):
             if not host:
                 _, _, host, _, _, _, _ = parse_url(r.url)
                 r.headers["Host"] = host
-            if self.domain is not None:
+
+            if self.aws_region is not None and self.aws_service is not None:
+                aws_params = dict(region=self.aws_region, service=self.aws_service)
+            elif self.domain is not None:
                 aws_params = self._parse_url(self.domain)
             else:
                 aws_params = self._parse_url(host)
@@ -100,38 +115,81 @@ class AWSv4AuthPlugin(AuthPlugin):
     prompt_password = False
 
     def get_auth(self, username=None, password=None):
-        # To remain consistant with AWS tools, boto3 credential store is used
-        #   to retrieve the users API keys.  This means environment variables
-        #   take precedent over ~/.aws/credentials and IAM roles.  credentials
-        #   can be provided on the CLI using the -a flag
-        #       eg, -a <access_key>:<secret_access_key>
+        """
+        To remain consistant with AWS tools, boto3 credential store is used
+        to retrieve the users API keys.  This means environment variables
+        take precedent over ~/.aws/credentials and IAM roles.  credentials
+        can be provided on the CLI using the -a flag eg,
+            -a <access_key>:<secret_access_key>
 
-        # An attempt is made to try and determine the region, endpoint and
-        #   service from a given request URL.  If you are using a custom domain
-        #   this is no doubt going fail and the user will need to input the neccessary
-        #   information using the `-a` flag.
+        You can also provide aditional parameters using following syntax:
+            -a access_key=<access_key>:secret_key=<secret_key>:
+            profile=<profile>:domain=<domain>:service=<service>:region=<region>
 
-        # The format for the `-a` flag is:
-        #   "service:region:endpoint"
+        or short equvivalent:
+            -a ak=<access_key>:sk=<secret_key>:p=<profile>:d=<domain>:
+            s=<service>:r=<region>
+
+        For example:
+            -a s=executeapi:r=eu-west-1
+
+        An attempt is made to try and determine the region, endpoint and
+        service from a given request URL if you are not supplying this data as above.
+        If you are using a custom domain this will fail and service plus region need
+        to be supplied in the -a flag.
+        """
 
         access_key = None
         secret_key = None
         domain = None
         profile = None
+        service = None
+        region = None
 
         if self.raw_auth is not None:
-            parts = self.raw_auth.split(":")
-            if len(parts) >= 2:
-                if parts[0] == "profile":
-                    profile = parts[1]
-                else:
+            try:
+                params = dict(x.split('=') for x in self.raw_auth.split(':'))
+                if 'access_key' in params:
+                    access_key = params['access_key']
+                elif 'ak' in params:
+                    access_key = params['ak']
+
+                if 'secret_key' in params:
+                    secret_key = params['secret_key']
+                elif 'sk' in params:
+                    secret_key = params['sk']
+
+                if 'profile' in params:
+                    profile = params['profile']
+                elif 'p' in params:
+                    profile = params['p']
+
+                if 'domain' in params:
+                    domain = params['domain']
+                elif 'd' in params:
+                    domain = params['d']
+
+                if 'service' in params:
+                    service = params['service']
+                elif 's' in params:
+                    service = params['s']
+
+                if 'region' in params:
+                    region = params['region']
+                elif 'r' in params:
+                    region = params['r']
+            except ValueError:
+                parts = self.raw_auth.split(':')
+
+                if len(parts) == 2:
                     access_key = parts[0]
                     secret_key = parts[1]
-                if len(parts) == 3:
-                    domain = parts[2]
-            elif len(parts) == 1:
-                domain = parts[0]
 
         return AWSAuth(
-            access_key=access_key, secret_key=secret_key, domain=domain, profile=profile
+            access_key=access_key,
+            secret_key=secret_key,
+            domain=domain,
+            profile=profile,
+            service=service,
+            region=region,
         )
