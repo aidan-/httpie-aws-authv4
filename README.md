@@ -18,36 +18,58 @@ This authentication plugin looks for credentials in the same [precedence that th
 $ http --auth-type aws4 https://asdf123a9sas.execute-api.ap-southeast-2.amazonaws.com/dev/test 
 ```
 
-### Specify credentials on the CLI
+### Extra arguments
+Using the `--auth` parameter, you can specify different kinds of credentials and options
+#### Specify credentials on the CLI
+Credentials can be specified shorthand as a pair:
 
 ```
 $ http --auth-type aws4 --auth ACCESSKEYXXX:AWSSECRETKEYXXX https://asdf123a9sas.execute-api.ap-southeast-2.amazonaws.com/dev/test 
 ```
 
-### Specify credentials profile on the CLI
-You can specify an another profile than the default profile by providing the keyword `profile` instead of the access key.
+#### Additional options
+Additional options can be injected into `--auth` including above mentioned credentials; these are following with the short option in parantesis:
+
+* access_key (ak)
+* secret_key (sk)
+* profile (p)
+* domain (d)
+* service (s)
+* region (r)
+
+#### Specify credentials profile on the CLI
+You can specify an another profile than the default profile
 
 ```
-$ http --auth-type aws4 --auth profile:XXX https://asdf123a9sas.execute-api.ap-southeast-2.amazonaws.com/dev/test 
+$ http --auth-type aws4 --auth profile=XXX https://asdf123a9sas.execute-api.ap-southeast-2.amazonaws.com/dev/test
 ```
 
-### Specify the endpoint
-If for some reason you are not hitting the AWS endpoint directly (common with API Gateway), you will need to specify the AWS provided endpoint on the CLI.  This is used to determine the service and region values required for the signature process.
+### Specify service and region
+If for some reason you are not hitting the AWS endpoint directly (common with API Gateway), you will need to specify the AWS provided service and region-
 
 ```
-$ http --auth-type aws4 --auth asdf123a9sas.execute-api.ap-southeast-2.amazonaws.com https://api.awesomeservice.net/dev/test 
+$ http --auth-type aws4 --auth s=execute-api:r=eu-west-1 https://api.awesomeservice.net/dev/test
+$ http --auth-type aws4 --auth service=execute-api:region=eu-west-1 https://api.awesomeservice.net/dev/test
 ```
+### Specify endpoint
+Instead of specifying service and region you can specify domain which is then parsed.
 
+```
+$ http --auth-type aws4 --auth d=asdf123a9sas.execute-api.ap-southeast-2.amazonaws.com https://api.awesomeservice.net/dev/test
+$ http --auth-type aws4 --auth domain=asdf123a9sas.execute-api.ap-southeast-2.amazonaws.com https://api.awesomeservice.net/dev/test
+```
 ### Specify credentials and endpoint
 
 ```
-$ http --auth-type aws4 --auth ACCESSKEYXXX:AWSSECRETKEYXXX:asdf123a9sas.execute-api.ap-southeast-2.amazonaws.com https://api.awesomeservice.net/dev/test 
+$ http --auth-type aws4 --auth ak=ACCESSKEYXXX:sk=AWSSECRETKEYXXX:d=asdf123a9sas.execute-api.ap-southeast-2.amazonaws.com https://api.awesomeservice.net/dev/test
+$ http --auth-type aws4 --auth access_key=ACCESSKEYXXX:secret_key=AWSSECRETKEYXXX:domain=asdf123a9sas.execute-api.ap-southeast-2.amazonaws.com https://api.awesomeservice.net/dev/test
 ```
 
 ### Specify credentials profile and endpoint
 
 ```
-$ http --auth-type aws4 --auth profile:XXX:asdf123a9sas.execute-api.ap-southeast-2.amazonaws.com https://api.awesomeservice.net/dev/test 
+$ http --auth-type aws4 --auth p=XXX:d=asdf123a9sas.execute-api.ap-southeast-2.amazonaws.com https://api.awesomeservice.net/dev/test
+$ http --auth-type aws4 --auth profile=XXX:domain=asdf123a9sas.execute-api.ap-southeast-2.amazonaws.com https://api.awesomeservice.net/dev/test
 ```
 
 ### Calling AWS services that require extra information
