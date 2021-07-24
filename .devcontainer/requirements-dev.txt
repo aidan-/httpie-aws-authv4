@@ -1,0 +1,10 @@
+# style check
+flake8
+pylint
+black
+
+# test
+mock
+pytest
+pytest-cov
+pytest-httpbin
