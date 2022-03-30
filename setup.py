@@ -8,7 +8,7 @@ with io.open("README.md", "rt", encoding="utf8") as f:
     readme = f.read()
 
 with io.open("httpie_aws_authv4.py", "rt", encoding="utf8") as f:
-    version = re.search(r"__version__ = \'(.*?)\'", f.read()).group(1)
+    version = re.search(r"__version__ = \"(.*?)\"", f.read()).group(1)
 
 setup(
     name="httpie-aws-authv4",
