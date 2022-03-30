@@ -11,9 +11,9 @@ from aws_requests_auth.aws_auth import AWSRequestsAuth
 from boto3 import session
 from urllib3.util import parse_url
 
-__version__ = '0.2.0'
-__author__ = 'Aidan Rowe'
-__licence__ = 'BSD'
+__version__ = "0.2.0"
+__author__ = "Aidan Rowe"
+__licence__ = "BSD"
 
 
 class AWSAuth(object):
@@ -35,10 +35,10 @@ class AWSAuth(object):
     def __call__(self, r):
         try:
             # Host used in signature *MUST* always match with Host HTTP header.
-            host = r.headers.get('Host')
+            host = r.headers.get("Host")
             if not host:
                 _, _, host, _, _, _, _ = parse_url(r.url)
-                r.headers['Host'] = host
+                r.headers["Host"] = host
             if self.domain is not None:
                 aws_params = self._parse_url(self.domain)
             else:
@@ -50,12 +50,14 @@ class AWSAuth(object):
             print("Error parsing URL: %s" % error)
             raise
 
-        aws_request = AWSRequestsAuth(aws_access_key=self.aws_access_key,
-                                      aws_secret_access_key=self.aws_secret_access_key,
-                                      aws_host=host,
-                                      aws_region=aws_params['region'],
-                                      aws_service=aws_params['service'],
-                                      aws_token=self.aws_token)
+        aws_request = AWSRequestsAuth(
+            aws_access_key=self.aws_access_key,
+            aws_secret_access_key=self.aws_secret_access_key,
+            aws_host=host,
+            aws_region=aws_params["region"],
+            aws_service=aws_params["service"],
+            aws_token=self.aws_token,
+        )
 
         return aws_request.__call__(r)
 
@@ -65,23 +67,21 @@ class AWSAuth(object):
         m = p.search(domain)
 
         if m:
-            return {"region": m.group(1),
-                    "service": "es"}
+            return {"region": m.group(1), "service": "es"}
 
         p = re.compile("([^\.]+)\.([^\.]+)\.amazonaws.com(\.cn)?$")
         m = p.search(domain)
 
         if m:
-            return {"region": m.group(2),
-                    "service": m.group(1)}
+            return {"region": m.group(2), "service": m.group(1)}
 
         raise ValueError("Could not determine AWS region or service from domain name.")
 
 
 class AWSv4AuthPlugin(AuthPlugin):
-    name = 'AWS auth-v4'
-    auth_type = 'aws4'
-    description = 'Sign requests using the AWS Signature Version 4 Signing Process'
+    name = "AWS auth-v4"
+    auth_type = "aws4"
+    description = "Sign requests using the AWS Signature Version 4 Signing Process"
     auth_require = False
     auth_parse = False
     prompt_password = False
@@ -107,9 +107,9 @@ class AWSv4AuthPlugin(AuthPlugin):
         profile = None
 
         if self.raw_auth is not None:
-            parts = self.raw_auth.split(':')
+            parts = self.raw_auth.split(":")
             if len(parts) >= 2:
-                if parts[0] == 'profile':
+                if parts[0] == "profile":
                     profile = parts[1]
                 else:
                     access_key = parts[0]
@@ -119,4 +119,6 @@ class AWSv4AuthPlugin(AuthPlugin):
             elif len(parts) == 1:
                 domain = parts[0]
 
-        return AWSAuth(access_key=access_key, secret_key=secret_key, domain=domain, profile=profile)
+        return AWSAuth(
+            access_key=access_key, secret_key=secret_key, domain=domain, profile=profile
+        )
