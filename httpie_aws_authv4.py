@@ -63,13 +63,13 @@ class AWSAuth(object):
 
     @staticmethod
     def _parse_url(domain):
-        p = re.compile("([^\.]+)\.es\.amazonaws.com(\.cn)?$")
+        p = re.compile(r"([^\.]+)\.es\.amazonaws.com(\.cn)?$")
         m = p.search(domain)
 
         if m:
             return {"region": m.group(1), "service": "es"}
 
-        p = re.compile("([^\.]+)\.([^\.]+)\.amazonaws.com(\.cn)?$")
+        p = re.compile(r"([^\.]+)\.([^\.]+)\.amazonaws.com(\.cn)?$")
         m = p.search(domain)
 
         if m:
