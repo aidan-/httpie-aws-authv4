@@ -32,6 +32,19 @@ class AWSAuth(object):
             self.aws_secret_access_key = creds.secret_key
             self.aws_token = creds.token
 
+    def __eq__(self, other):
+        if not isinstance(other, AWSAuth):
+            raise NotImplemented
+
+        return all(
+            [
+                self.aws_access_key == other.aws_access_key,
+                self.aws_secret_access_key == other.aws_secret_access_key,
+                self.aws_token == other.aws_token,
+                self.domain == other.domain,
+            ]
+        )
+
     def __call__(self, r):
         try:
             # Host used in signature *MUST* always match with Host HTTP header.
