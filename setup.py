@@ -16,7 +16,7 @@ setup(
     version=version,
     author="Aidan Rowe",
     author_email="aidanrowe@gmail.com",
-    license="BSD",
+    license="MIT",
     url="https://github.com/aidan-/httpie-aws-authv4",
     download_url="https://github.com/aidan-/httpie-aws-authv4",
     py_modules=["httpie_aws_authv4"],

@@ -13,7 +13,7 @@ from urllib3.util import parse_url
 
 __version__ = "0.2.1"
 __author__ = "Aidan Rowe"
-__licence__ = "BSD"
+__licence__ = "MIT"
 
 
 class AWSAuth(object):
