@@ -114,6 +114,16 @@ class AWSv4AuthPlugin(AuthPlugin):
     auth_parse = False
     prompt_password = False
 
+    alias_params = {
+        "ak": "access_key",
+        "sk": "secret_key",
+        "p": "profile",
+        "d": "domain",
+        "s": "service",
+        "r": "region",
+    }
+    """map of alias -> full param name"""
+
     def get_auth(self, username=None, password=None):
         """
         To remain consistant with AWS tools, boto3 credential store is used
@@ -147,37 +157,33 @@ class AWSv4AuthPlugin(AuthPlugin):
         region = None
 
         if self.raw_auth is not None:
+
             try:
                 params = dict(x.split('=') for x in self.raw_auth.split(':'))
+
+                for alias, full in self.alias_params.items():
+                    if alias in params:
+                        params[full] = params[alias]
+                        del params[alias]
+
                 if 'access_key' in params:
                     access_key = params['access_key']
-                elif 'ak' in params:
-                    access_key = params['ak']
 
                 if 'secret_key' in params:
                     secret_key = params['secret_key']
-                elif 'sk' in params:
-                    secret_key = params['sk']
 
                 if 'profile' in params:
                     profile = params['profile']
-                elif 'p' in params:
-                    profile = params['p']
 
                 if 'domain' in params:
                     domain = params['domain']
-                elif 'd' in params:
-                    domain = params['d']
 
                 if 'service' in params:
                     service = params['service']
-                elif 's' in params:
-                    service = params['s']
 
                 if 'region' in params:
                     region = params['region']
-                elif 'r' in params:
-                    region = params['r']
+
             except ValueError:
                 parts = self.raw_auth.split(':')
 
