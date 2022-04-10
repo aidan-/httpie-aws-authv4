@@ -38,14 +38,14 @@ Additional options can be injected into `--auth` including above mentioned crede
 * region (r)
 
 #### Specify credentials profile on the CLI
-You can specify an another profile than the default profile
+You can specify another profile than the default profile:
 
 ```
 $ http --auth-type aws4 --auth profile=XXX https://asdf123a9sas.execute-api.ap-southeast-2.amazonaws.com/dev/test
 ```
 
 ### Specify service and region
-If for some reason you are not hitting the AWS endpoint directly (common with API Gateway), you will need to specify the AWS provided service and region-
+If for some reason you are not hitting the AWS endpoint directly (common with API Gateway), you will need to specify the AWS provided service and region:
 
 ```
 $ http --auth-type aws4 --auth s=execute-api:r=eu-west-1 https://api.awesomeservice.net/dev/test
