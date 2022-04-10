@@ -133,15 +133,15 @@ class AWSv4AuthPlugin(AuthPlugin):
             -a <access_key>:<secret_access_key>
 
         You can also provide aditional parameters using following syntax:
-            -a access_key=<access_key>:secret_key=<secret_key>:
-            profile=<profile>:domain=<domain>:service=<service>:region=<region>
+            -a access_key=<access_key>,secret_key=<secret_key>,
+            profile=<profile>,domain=<domain>,service=<service>,region=<region>
 
         or short equvivalent:
-            -a ak=<access_key>:sk=<secret_key>:p=<profile>:d=<domain>:
-            s=<service>:r=<region>
+            -a ak=<access_key>,sk=<secret_key>,p=<profile>,d=<domain>,
+            s=<service>,r=<region>
 
         For example:
-            -a s=executeapi:r=eu-west-1
+            -a s=executeapi,r=eu-west-1
 
         An attempt is made to try and determine the region, endpoint and
         service from a given request URL if you are not supplying this data as above.
@@ -159,37 +159,42 @@ class AWSv4AuthPlugin(AuthPlugin):
         if self.raw_auth is not None:
 
             try:
-                params = dict(x.split('=') for x in self.raw_auth.split(':'))
+                if '=' in self.raw_auth:
 
-                for alias, full in self.alias_params.items():
-                    if alias in params:
-                        params[full] = params[alias]
-                        del params[alias]
+                    params = dict(x.split('=') for x in self.raw_auth.split(','))
 
-                if 'access_key' in params:
-                    access_key = params['access_key']
+                    for alias, full in self.alias_params.items():
+                        if alias in params:
+                            params[full] = params[alias]
+                            del params[alias]
 
-                if 'secret_key' in params:
-                    secret_key = params['secret_key']
+                    if 'access_key' in params:
+                        access_key = params['access_key']
 
-                if 'profile' in params:
-                    profile = params['profile']
+                    if 'secret_key' in params:
+                        secret_key = params['secret_key']
 
-                if 'domain' in params:
-                    domain = params['domain']
+                    if 'profile' in params:
+                        profile = params['profile']
 
-                if 'service' in params:
-                    service = params['service']
+                    if 'domain' in params:
+                        domain = params['domain']
 
-                if 'region' in params:
-                    region = params['region']
+                    if 'service' in params:
+                        service = params['service']
+
+                    if 'region' in params:
+                        region = params['region']
+                else:
+                    parts = self.raw_auth.split(':')
+
+                    if len(parts) == 2:
+                        access_key = parts[0]
+                        secret_key = parts[1]
 
             except ValueError:
-                parts = self.raw_auth.split(':')
-
-                if len(parts) == 2:
-                    access_key = parts[0]
-                    secret_key = parts[1]
+                print("ERROR: Could not parse auth string.")
+                raise
 
         return AWSAuth(
             access_key=access_key,
