@@ -4,12 +4,11 @@ AWS-v4 auth plugin for HTTPie.
 
 """
 import re
-
-from httpie.plugins import AuthPlugin
 from typing import cast
 
 from aws_requests_auth.aws_auth import AWSRequestsAuth
 from boto3 import session
+from httpie.plugins import AuthPlugin
 from urllib3.util import parse_url
 
 __version__ = "0.2.1"
