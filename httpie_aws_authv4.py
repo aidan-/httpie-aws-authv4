@@ -149,12 +149,7 @@ class AWSv4AuthPlugin(AuthPlugin):
         to be supplied in the -a flag.
         """
 
-        access_key = None
-        secret_key = None
-        domain = None
-        profile = None
-        service = None
-        region = None
+        params: dict
 
         if self.raw_auth is not None:
 
@@ -168,39 +163,15 @@ class AWSv4AuthPlugin(AuthPlugin):
                             params[full] = params[alias]
                             del params[alias]
 
-                    if 'access_key' in params:
-                        access_key = params['access_key']
-
-                    if 'secret_key' in params:
-                        secret_key = params['secret_key']
-
-                    if 'profile' in params:
-                        profile = params['profile']
-
-                    if 'domain' in params:
-                        domain = params['domain']
-
-                    if 'service' in params:
-                        service = params['service']
-
-                    if 'region' in params:
-                        region = params['region']
                 else:
+
                     parts = self.raw_auth.split(':')
 
                     if len(parts) == 2:
-                        access_key = parts[0]
-                        secret_key = parts[1]
+                        params = {'access_key': parts[0], 'secret_key': parts[1]}
 
             except ValueError:
                 print("ERROR: Could not parse auth string.")
                 raise
 
-        return AWSAuth(
-            access_key=access_key,
-            secret_key=secret_key,
-            domain=domain,
-            profile=profile,
-            service=service,
-            region=region,
-        )
+        return AWSAuth(**params)
