@@ -44,7 +44,7 @@ class AWSAuth(object):
 
     def __eq__(self, other):
         if not isinstance(other, AWSAuth):
-            raise NotImplemented
+            raise NotImplementedError
 
         return all(
             [
