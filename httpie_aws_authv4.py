@@ -179,9 +179,6 @@ class AWSv4AuthPlugin(AuthPlugin):
                     elif len(parts) == 1:
                         params["domain"] = parts[0]
 
-                    if len(parts) == 2:
-                        params = {'access_key': parts[0], 'secret_key': parts[1]}
-
             except ValueError:
                 print("ERROR: Could not parse auth string.")
                 raise
