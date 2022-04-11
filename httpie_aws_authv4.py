@@ -4,7 +4,6 @@ AWS-v4 auth plugin for HTTPie.
 
 """
 import re
-from typing import cast
 
 from aws_requests_auth.aws_auth import AWSRequestsAuth
 from boto3 import session
@@ -157,7 +156,7 @@ class AWSv4AuthPlugin(AuthPlugin):
                 if '=' in self.raw_auth:
 
                     params = dict(
-                        x.split('=', 2) for x in cast('str', self.raw_auth).split(',')
+                        x.split('=', 2) for x in self.raw_auth.split(',')
                     )
 
                     for alias, full in self.alias_params.items():
