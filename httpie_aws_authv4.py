@@ -149,7 +149,7 @@ class AWSv4AuthPlugin(AuthPlugin):
         to be supplied in the -a flag.
         """
 
-        params: dict
+        params: dict = {}
 
         if self.raw_auth is not None:
 
@@ -167,7 +167,17 @@ class AWSv4AuthPlugin(AuthPlugin):
 
                 else:
 
-                    parts = self.raw_auth.split(':')
+                    parts = self.raw_auth.split(":")
+                    if len(parts) >= 2:
+                        if parts[0] == "profile":
+                            params["profile"] = parts[1]
+                        else:
+                            params["access_key"] = parts[0]
+                            params["secret_key"] = parts[1]
+                        if len(parts) == 3:
+                            params["domain"] = parts[2]
+                    elif len(parts) == 1:
+                        params["domain"] = parts[0]
 
                     if len(parts) == 2:
                         params = {'access_key': parts[0], 'secret_key': parts[1]}
