@@ -9,33 +9,31 @@ $ pip install --upgrade httpie-aws-authv4
 
 You should now see `aws4` under `--auth-type / -A` in `$ http --help` output.
 
-## Usage
+## Simple Usage
 
 ### Credentials in default profile/environment variables/instance profile
 This authentication plugin looks for credentials in the same [precedence that the AWS CLI tool](http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html#config-settings-and-precedence) does.
 
 ```
-$ http --auth-type aws4 https://asdf123a9sas.execute-api.ap-southeast-2.amazonaws.com/dev/test 
+$ http --auth-type aws4 https://asdf123a9sas.execute-api.ap-southeast-2.amazonaws.com/dev/test
 ```
 
 ### Extra arguments
-Using the `--auth` parameter, you can specify different kinds of credentials and options
-#### Specify credentials on the CLI
-Credentials can be specified shorthand as a pair:
+Using the `--auth` parameter, you can specify explicit parameters to be used in the calculation of the Sigv4 signature.
 
 ```
-$ http --auth-type aws4 --auth ACCESSKEYXXX:AWSSECRETKEYXXX https://asdf123a9sas.execute-api.ap-southeast-2.amazonaws.com/dev/test 
+$ http --auth-type aws4 --auth access_key=AWSACCESSKEYXXX,secret_key=AWSSECRETKEYXXX,service=execute-api,region=ap-southeast-2 https://asdf123a9sas.execute-api.ap-southeast-2.amazonaws.com/dev/test
 ```
 
-#### Additional options
-Additional options can be injected into `--auth` including above mentioned credentials; these are following with the short option in parantesis:
+#### Auth options
+The following arguments are supported via the `--auth` flag.  They can be referenced via their full or short name for convenience.
 
-* access_key (ak)
-* secret_key (sk)
-* profile (p)
-* domain (d)
-* service (s)
-* region (r)
+* access_key (ak) - AWS Access Key.
+* secret_key (sk) - AWS Secret Key.
+* profile (p) - AWS profile to use.
+* domain (d) - Domain name to use when signing the request.
+* service (s) - AWS service name to use when signing the request (ie, `execute-api`).
+* region (r) - AWS region the endpoint is located in.
 
 #### Specify credentials profile on the CLI
 You can specify another profile than the default profile:
@@ -48,8 +46,8 @@ $ http --auth-type aws4 --auth profile=XXX https://asdf123a9sas.execute-api.ap-s
 If for some reason you are not hitting the AWS endpoint directly (common with API Gateway), you will need to specify the AWS provided service and region:
 
 ```
-$ http --auth-type aws4 --auth s=execute-api:r=eu-west-1 https://api.awesomeservice.net/dev/test
-$ http --auth-type aws4 --auth service=execute-api:region=eu-west-1 https://api.awesomeservice.net/dev/test
+$ http --auth-type aws4 --auth s=execute-api,r=eu-west-1 https://api.awesomeservice.net/dev/test
+$ http --auth-type aws4 --auth service=execute-api,region=eu-west-1 https://api.awesomeservice.net/dev/test
 ```
 ### Specify endpoint
 Instead of specifying service and region you can specify domain which is then parsed.
@@ -61,15 +59,15 @@ $ http --auth-type aws4 --auth domain=asdf123a9sas.execute-api.ap-southeast-2.am
 ### Specify credentials and endpoint
 
 ```
-$ http --auth-type aws4 --auth ak=ACCESSKEYXXX:sk=AWSSECRETKEYXXX:d=asdf123a9sas.execute-api.ap-southeast-2.amazonaws.com https://api.awesomeservice.net/dev/test
-$ http --auth-type aws4 --auth access_key=ACCESSKEYXXX:secret_key=AWSSECRETKEYXXX:domain=asdf123a9sas.execute-api.ap-southeast-2.amazonaws.com https://api.awesomeservice.net/dev/test
+$ http --auth-type aws4 --auth ak=ACCESSKEYXXX,sk=AWSSECRETKEYXXX,d=asdf123a9sas.execute-api.ap-southeast-2.amazonaws.com https://api.awesomeservice.net/dev/test
+$ http --auth-type aws4 --auth access_key=ACCESSKEYXXX,secret_key=AWSSECRETKEYXXX,domain=asdf123a9sas.execute-api.ap-southeast-2.amazonaws.com https://api.awesomeservice.net/dev/test
 ```
 
 ### Specify credentials profile and endpoint
 
 ```
-$ http --auth-type aws4 --auth p=XXX:d=asdf123a9sas.execute-api.ap-southeast-2.amazonaws.com https://api.awesomeservice.net/dev/test
-$ http --auth-type aws4 --auth profile=XXX:domain=asdf123a9sas.execute-api.ap-southeast-2.amazonaws.com https://api.awesomeservice.net/dev/test
+$ http --auth-type aws4 --auth p=XXX,d=asdf123a9sas.execute-api.ap-southeast-2.amazonaws.com https://api.awesomeservice.net/dev/test
+$ http --auth-type aws4 --auth profile=XXX,domain=asdf123a9sas.execute-api.ap-southeast-2.amazonaws.com https://api.awesomeservice.net/dev/test
 ```
 
 ### Calling AWS services that require extra information
