@@ -10,7 +10,7 @@ from boto3 import session
 from httpie.plugins import AuthPlugin
 from urllib3.util import parse_url
 
-__version__ = "0.2.1"
+__version__ = "0.3.0"
 __author__ = "Aidan Rowe"
 __licence__ = "MIT"
 
@@ -153,11 +153,9 @@ class AWSv4AuthPlugin(AuthPlugin):
         if self.raw_auth is not None:
 
             try:
-                if '=' in self.raw_auth:
+                if "=" in self.raw_auth:
 
-                    params = dict(
-                        x.split('=', 2) for x in self.raw_auth.split(',')
-                    )
+                    params = dict(x.split("=", 2) for x in self.raw_auth.split(","))
 
                     for alias, full in self.alias_params.items():
                         if alias in params:
